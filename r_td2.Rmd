@@ -1,0 +1,83 @@
+---
+title: "td2_Stats_Spatiales"
+author: "Emilien_BAGNOL"
+date: "2024-02-01"
+output: html_document
+---
+
+# TD2 Statitisques Spatiales
+
+## Exercice 1
+
+### Question 0
+```{r}
+install.packages("dplyr")
+install.packages("sf")
+library(sf)
+library(dplyr)
+```
+
+### Question 1 : Importation
+```{r}
+commune_france_metro <- st_read("commune_francemetro_2021.shp", options = "ENCODING=WINDOWS-1252")
+```
+
+### Question 2 : Résumé
+```{r}
+str(commune_france_metro)
+summary(commune_france_metro)
+```
+
+### Question 3 : affichage
+```{r}
+head(commune_france_metro, 10)
+```
+
+### Question 4 : Système de projection de la table
+```{r}
+st_crs(commune_france_metro)
+```
+Le système de projection de la table correspond à la manière dont est présenté la carte
+
+### Question 5 : Selection de communes de Bretagne
+```{r}
+communes_bretagne <- commune_france_metro %>%
+  select(code, libelle, epc, dep, surf) %>%
+  filter(dep %in% c("29", "22", "56", "35"))
+str(communes_bretagne)
+```
+Il y a egalement la vraiable geometry.
+
+### Question 6 : Object SF
+```{r}
+class(communes_bretagne)
+```
+Cette fonction permet de prouver que ce document est un document sf.
+
+### Question 7 : Graphique
+```{r}
+plot(communes_bretagne, lwd=1)
+# lwd permet d'ajuster la taille des traits entre les communes
+```
+
+
+### Question 8 :  Utilisation de la fonction st_geometry
+```{r}
+plot(st_geometry(communes_bretagne))
+```
+
+### Question 9 : Création variable de surface
+```{r}
+communes_bretagne$surf2 <- st_area(communes_bretagne$geometry)
+str(communes_bretagne$surf2)
+```
+
+### Question 10 : Transphormer la variable en km²
+```{r}
+communes_bretagne %>%
+  mutate(surf2 = units::set_units(surf2,"km^2"))
+```
+
+### Question 11 : Egalité des variables surf2 et surf
+
+
